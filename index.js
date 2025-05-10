@@ -1,28 +1,30 @@
 var express = require('express');
 var app = express();
+var path = require('path');
 
 // Configurar el motor de plantillas
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 var cors = require('cors');
-app.use(cors({optionsSuccessStatus: 200}));  
+app.use(cors({
+  origin: ['http://localhost:5500', 'http://127.0.0.1:5500'],
+  optionsSuccessStatus: 200
+}));  
 
-app.use(express.static('public'));
+// Servir archivos estáticos desde la carpeta public
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
+app.get("/api/current-time", function (req, res) {
   const currentTime = {
     unix: Date.now(),
     utc: new Date().toUTCString()
   };
-  
-  res.render('index', { 
-    currentTime: JSON.stringify(currentTime, null, 2),
-    exampleTime: JSON.stringify({
-      unix: 1451001600000,
-      utc: "Fri, 25 Dec 2015 00:00:00 GMT"
-    }, null, 2)
-  });
+  res.json(currentTime);
 });
 
 app.get("/api/:date?", function (req, res) {

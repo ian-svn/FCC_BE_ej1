@@ -5,33 +5,53 @@
       <title>Timestamp Microservice | freeCodeCamp.org</title>
       <link rel="shortcut icon" href="https://cdn.freecodecamp.org/universal/favicons/favicon-32x32.png" type="image/x-icon"/>
       <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-      <link href="style.css" rel="stylesheet" type="text/css">
+      <link href="http://localhost:3000/style.css" rel="stylesheet" type="text/css">
    </head>
 
    <body>
     <h1>Timestamp Microservice</h1>
-    <hr />
     <div class="container">
       <h2>Example Usage:</h2>
       <ul>
-        <li><a href="api/2015-12-25">[project url]/api/2015-12-25</a></li>
-        <li><a href="api/1451001600000">[project url]/api/1451001600000</a></li>
+        <li><a href="http://localhost:3000/api/2015-12-25">[project url]/api/2015-12-25</a></li>
+        <li><a href="http://localhost:3000/api/1451001600000">[project url]/api/1451001600000</a></li>
       </ul>
 
       <h2>Example Output:</h2>
       <p>
-        <code><%= exampleTime %></code>
+        <code>{"unix":1451001600000, "utc":"Fri, 25 Dec 2015 00:00:00 GMT"}</code>
       </p>
       
       <h2>Current Time:</h2>
       <p>
-        <code><%= currentTime %></code>
+        <code id="current-time">Loading...</code>
       </p>
     </div>
     <div class="footer">
       <p>
-        By Ian Vila</a>
+        By Ian Vila
       </p>
     </div>
+
+    <script>
+      // Función para actualizar el tiempo actual
+      async function updateCurrentTime() {
+        try {
+          const response = await fetch('http://localhost:3000/api/current-time');
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          document.getElementById('current-time').textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+          console.error('Error fetching time:', error);
+          document.getElementById('current-time').textContent = 'Error: Server not running. Please start the server with "node index.js"';
+        }
+      }
+
+      // Actualizar cada segundo
+      updateCurrentTime();
+      setInterval(updateCurrentTime, 1000);
+    </script>
   </body>
 </html>
