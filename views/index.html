@@ -34,7 +34,6 @@
     </div>
 
     <script>
-      // Función para actualizar el tiempo actual
       async function updateCurrentTime() {
         try {
           const response = await fetch('/api');
@@ -49,7 +48,6 @@
         }
       }
 
-      // Actualizar cada segundo
       updateCurrentTime();
       setInterval(updateCurrentTime, 1000);
     </script>
